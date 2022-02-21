@@ -1,0 +1,7 @@
+{
+  "hiveSenderAddress" : "REPLACE WITH HIVE SENDER ADDRESS",
+  "hiveActivePrivateKey" : "REPLACE WITH HIVE SENDER ACTIVE PRIVATE KEY",
+  "twitchChannel": "REPLACE WITH TWITCH CHANNEL",
+  "twitchUsername": "REPLACE WITH BOT'S TWITCH USERNAME",
+  "twitchOauthToken": "REPLACE WITH BOT'S TWITCH OAUTH TOKEN"
+}
