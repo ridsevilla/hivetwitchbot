@@ -1,5 +1,7 @@
 # hivetwitchbot
 
+![hivetwitchbot](https://raw.githubusercontent.com/ridsevilla/hivetwitchbot/main/logo.png)
+
 ## Installation
 
 First, setup [Node.js](https://nodejs.org/en/).
@@ -37,6 +39,10 @@ notes:
 -shortform for !hive: !ha
 -can interchange ! with $
 ```
+
+## Thanks
+
+Thanks to [verbalshadow](https://peakd.com/@verbalshadow) for the logo, licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)!
 
 ---
 
