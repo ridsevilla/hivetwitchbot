@@ -57,52 +57,54 @@ const getTwitchChatters = (channel) => {
   }
   var chatters = [];
   var rest_options = {
-    host: 'tmi.twitch.tv',
+    host: 'gql.twitch.tv',
     port: 443,
-    path: '/group/user/' + channel + '/chatters',
-    method: 'GET'
+    path: '/gql',
+    method: 'POST',
+    headers: {
+      'Client-Id': 'kimne78kx3ncx6brgo4mv6wki5h1ko'
+    }
   }
-
+  var post_data = {
+    operationName: 'ChatViewers',
+    variables: {
+        channelLogin: channel
+        },
+    extensions: {
+        persistedQuery: {
+            version: 1,
+            sha256Hash: 'e0761ef5444ee3acccee5cfc5b834cbfd7dc220133aa5fbefe1b66120f506250'
+            }
+        }
+  }
   return new Promise ((resolve, reject) => {
-    let request = https.request(rest_options, (response) => {
+    var request = https.request(rest_options, (response) => {
       var content = "";
-      response.on('data', (chunk) => {
+      response.on('data', function(chunk) {
         content += chunk;
       });
-      response.on('end', () => {
+      response.on('end', function() {
         try {
           let data = JSON.parse(content);
-          if (data !== undefined && data.chatters !== undefined) {
-            if (data.chatters.vips !== undefined) {
-              data.chatters.vips.forEach(function(vip) {
-                chatters.push(vip);
-              });
-            }
-            if (data.chatters.moderators !== undefined) {
-              data.chatters.moderators.forEach(function(moderator) {
-                chatters.push(moderator);
-              });
-            }
-            if (data.chatters.staff !== undefined) {
-              data.chatters.staff.forEach(function(staff) {
-                chatters.push(staff);
-              });
-            }
-            if (data.chatters.admins !== undefined) {
-              data.chatters.admins.forEach(function(admin) {
-                chatters.push(admin);
-              });
-            }
-            if (data.chatters['global_mods'] !== undefined) {
-              data.chatters['global_mods'].forEach(function(moderator) {
-                chatters.push(moderator);
-              });
-            }
-            if (data.chatters.viewers !== undefined) {
-              data.chatters.viewers.forEach(function(viewer) {
-                chatters.push(viewer);
-              });
-            }
+          if (data.data.channel.chatters.staff !== undefined) {
+            data.data.channel.chatters.staff.forEach(function(staff) {
+              chatters.push(staff.login);
+            });
+          }
+          if (data.data.channel.chatters.moderators !== undefined) {
+            data.data.channel.chatters.moderators.forEach(function(moderator) {
+              chatters.push(moderator.login);
+            });
+          }
+          if (data.data.channel.chatters.vips !== undefined) {
+            data.data.channel.chatters.vips.forEach(function(vip) {
+              chatters.push(vip.login);
+            });
+          }
+          if (data.data.channel.chatters.viewers !== undefined) {
+            data.data.channel.chatters.viewers.forEach(function(viewer) {
+              chatters.push(viewer.login);
+            });
           }
           resolve(chatters);
           return;
@@ -113,7 +115,8 @@ const getTwitchChatters = (channel) => {
         }
       });
     });
-    request.on('error', (error) => {
+    request.write(JSON.stringify(post_data));
+    request.on('error', function(error) {
       reject('error while calling api endpoint');
     });
     request.end();
@@ -348,7 +351,6 @@ const processMessage = (channel, message, username, user_id) => {
         }
       }
       catch (error) {
-        console.log(error);
         twitchClient.say(channel, '@' + username + ' insufficient resources');
       }
     })();
